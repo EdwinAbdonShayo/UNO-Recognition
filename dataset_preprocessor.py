@@ -25,7 +25,14 @@ def apply_transformations_and_filters(img):
         ("gaussian_blur", img.filter(ImageFilter.GaussianBlur(5))),
         ("invert", ImageOps.invert(img)),
         ("solarize", ImageOps.solarize(img, threshold=128))
+        
     ]
+
+def ensure_orientation(image):
+    width, height = image.size
+    if height < width:
+        return image.rotate(90, expand=True)
+    return image
 
 # Process and save images with transformations and filters
 def process_images(root_dir, output_dir):
@@ -42,6 +49,10 @@ def process_images(root_dir, output_dir):
                     
                     for name, transformed_img in apply_transformations_and_filters(img):
                         try:
+                            # Ensure orientation with shorter side as the width
+                            transformed_img = ensure_orientation(transformed_img)
+                            
+                            # Save each transformed image
                             filename, file_extension = os.path.splitext(file)
                             new_filename = f"{filename}_{name}{file_extension}"
                             new_file_path = os.path.join(output_path, new_filename)
