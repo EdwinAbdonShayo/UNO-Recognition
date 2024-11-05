@@ -11,21 +11,14 @@ IMAGE_FORMATS = ('.jpg', '.png', '.jpeg')
 def apply_transformations_and_filters(img):
     return [
         ("original", img),
-        ("grayscale", img.convert("L")),
-        ("blur", img.filter(ImageFilter.BLUR)),
-        ("edge_enhance", img.filter(ImageFilter.EDGE_ENHANCE)),
-        ("sharpen", img.filter(ImageFilter.SHARPEN)),
-        ("detail", img.filter(ImageFilter.DETAIL)),
-        ("contrast", ImageEnhance.Contrast(img).enhance(2.0)),
-        ("brightness", ImageEnhance.Brightness(img).enhance(1.5)),
-        ("rotate", img.rotate(45)),
-        ("flip_horizontal", img.transpose(Image.FLIP_LEFT_RIGHT)),
-        ("flip_vertical", img.transpose(Image.FLIP_TOP_BOTTOM)),
-        ("emboss", img.filter(ImageFilter.EMBOSS)),  
-        ("gaussian_blur", img.filter(ImageFilter.GaussianBlur(5))),
-        ("invert", ImageOps.invert(img)),
-        ("solarize", ImageOps.solarize(img, threshold=128))
-        
+        ("rotate_5", img.rotate(5)),
+        ("rotate_neg5", img.rotate(-5)),
+        ("small_zoom_in", img.resize((int(img.width * 1.05), int(img.height * 1.05))).crop((int(img.width * 0.025), int(img.height * 0.025), int(img.width * 1.025), int(img.height * 1.025)))),
+        ("small_zoom_out", img.resize((int(img.width * 0.95), int(img.height * 0.95))).crop((0, 0, img.width, img.height))),
+        ("hue_shift", ImageEnhance.Color(img).enhance(1.05)),  
+        ("light_noise", img.filter(ImageFilter.GaussianBlur(0.5))), 
+        ("translate_up", ImageOps.expand(img, (0, 10, 0, 0), fill="black").crop((0, 0, img.width, img.height))),
+        ("translate_left", ImageOps.expand(img, (10, 0, 0, 0), fill="black").crop((0, 0, img.width, img.height))),
     ]
 
 def ensure_orientation(image):
