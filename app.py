@@ -1,23 +1,23 @@
-# Import libraries to be used
-import os  # To work with files and directories
-import numpy as np  # For numerical operations
-import tensorflow as tf  # For deep learning
-from tensorflow.keras.preprocessing.image import ImageDataGenerator, img_to_array, load_img  # For image processing
-import cv2  # For camera input and image processing
+# Libraries for file operations, numerical computations, and machine learning
+import os
+import numpy as np
+import tensorflow as tf
+from tensorflow.keras.preprocessing.image import ImageDataGenerator, img_to_array, load_img
+import cv2
 import tkinter as tk
 from tkinter import filedialog, messagebox
 from PIL import Image, ImageTk
 
-# Path to the folder with images
+# Directory containing dataset of labeled images
 data_dir = r'dataset'
 
-# Model file name
-model_path = 'Model.keras'  # Save the model in the current directory
+# Path to the trained model file
+model_path = 'Model(2).keras'
 
-# Get class names from the dataset folders
-class_names = sorted(os.listdir(data_dir))  # List of classes based on folder names
+# Load class names from dataset folder names
+class_names = sorted(os.listdir(data_dir))
 
-# Step 4: Prediction functions
+# Predict class from an image file
 def predict_from_file(model, image_path):
     image = load_img(image_path, target_size=(255, 340))
     image_array = img_to_array(image) / 255.0
@@ -26,6 +26,7 @@ def predict_from_file(model, image_path):
     class_index = np.argmax(prediction)
     return class_names[class_index]
 
+# Predict class from camera feed in real-time
 def predict_from_camera(model):
     cap = cv2.VideoCapture(0)
     while True:
@@ -45,13 +46,14 @@ def predict_from_camera(model):
     cap.release()
     cv2.destroyAllWindows()
 
-# GUI setup with tkinter
+# Configure the GUI for the application
 def setup_gui():
     root = tk.Tk()
     root.title("UNO Card Recognition")
     root.geometry("400x600")
-    root.configure(bg="#404040") 
+    root.configure(bg="#404040")
 
+    # Load the pre-trained model
     def setup_model():
         global model
         if os.path.exists(model_path):
@@ -59,6 +61,7 @@ def setup_gui():
         else:
             messagebox.showerror("Error", "Model not found. Please train the model first.")
 
+    # Open file dialog to select an image and predict its class
     def open_file():
         file_path = filedialog.askopenfilename()
         if file_path:
@@ -70,11 +73,13 @@ def setup_gui():
             result_image.config(image=photo)
             result_image.image = photo
 
+    # Open camera and start real-time prediction
     def open_camera():
         predict_from_camera(model)
 
     setup_model()
 
+    # GUI components for displaying labels and buttons
     label = tk.Label(root, text="UNO Card Recognition", font=("Comfortaa", 16, "bold"), bg="#404040", fg="#ffffff")
     label.pack(pady=10)
 
@@ -94,6 +99,6 @@ def setup_gui():
 
     root.mainloop()
 
-# Run the GUI application
+# Launch the application
 if __name__ == '__main__':
     setup_gui()
