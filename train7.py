@@ -12,7 +12,7 @@ batch_size = 16
 num_classes = 54
 
 # Set up data augmentation for the training set
-train_datagen = ImageDataGenerator(
+datagen = ImageDataGenerator(
     rescale=1./255,
     validation_split=0.2,
     rotation_range=20,
@@ -22,8 +22,8 @@ train_datagen = ImageDataGenerator(
     horizontal_flip=True
 )
 
-# Load training and validation data
-train_data = train_datagen.flow_from_directory(
+# Load training and validation data from the same directory
+train_data = datagen.flow_from_directory(
     data_dir,
     target_size=(img_height, img_width),
     batch_size=batch_size,
@@ -31,8 +31,7 @@ train_data = train_datagen.flow_from_directory(
     subset='training'
 )
 
-validation_datagen = ImageDataGenerator(rescale=1./255, validation_split=0.2)
-validation_data = validation_datagen.flow_from_directory(
+validation_data = datagen.flow_from_directory(
     data_dir,
     target_size=(img_height, img_width),
     batch_size=batch_size,
